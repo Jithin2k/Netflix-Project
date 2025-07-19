@@ -1,10 +1,11 @@
 import React from 'react'
+import Body from './Components/Body'
 
 const App = () => {
   return (
-    <div>
-      <h1 className='bg-yellow-300'>Netflix Begins</h1>
-    </div>
+    <>
+     <Body/>
+    </>
   )
 }
 
