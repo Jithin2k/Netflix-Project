@@ -3,19 +3,24 @@ import Header from "./Header";
 import { checkValidData } from "../Utils/validate";
 import {
   createUserWithEmailAndPassword,
+  reload,
   signInWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { auth } from "../Utils/firebase";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../Utils/userSlice";
 
 const Login = () => {
-
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
 
   const email = useRef(null);
+  const name = useRef(null);
   const password = useRef(null);
 
   const toggleSignIn = () => {
@@ -35,10 +40,32 @@ const Login = () => {
         password.current.value
       )
         .then((userCredential) => {
-          // Signed up
           const user = userCredential.user;
+          updateProfile(user, {
+            displayName: name.current.value,
+            photoURL:
+              "https://avatars.githubusercontent.com/u/176993623?v=4&size=64",
+          })
+            .then(() => {
+              return reload(auth.currentUser);
+            })
+            .then(() => {
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+              navigate("/browse");
+              // ...
+            })
+            .catch((error) => {
+              setErrorMessage(error.message);
+            });
           console.log(user);
-          navigate("/browse")
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -56,7 +83,7 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           console.log(user);
-          navigate("/browse")
+          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -86,6 +113,7 @@ const Login = () => {
         {isSignInForm ? null : (
           <input
             type="text"
+            ref={name}
             placeholder="Name"
             className="p-4 border my-4 bg-gray-900 w-full rounded-lg"
           />
@@ -93,13 +121,13 @@ const Login = () => {
         <input
           type="text"
           ref={email}
-          placeholder="Email"
+          placeholder="email"
           className="p-4 border my-4 bg-gray-900 w-full rounded-lg"
         />
         <input
           type="text"
           ref={password}
-          placeholder="Password"
+          placeholder="password"
           className="p-4 my-4 border bg-gray-900 w-full rounded-lg"
         />
         <p className="text-red-500 sm:text-lg font-semibold">{errorMessage}</p>
