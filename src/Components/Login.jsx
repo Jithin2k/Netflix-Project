@@ -11,6 +11,7 @@ import { auth } from "../Utils/firebase";
 
 import { useDispatch } from "react-redux";
 import { addUser } from "../Utils/userSlice";
+import { USER_AVATAR } from "../Utils/constant";
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -42,8 +43,7 @@ const Login = () => {
           const user = userCredential.user;
           updateProfile(user, {
             displayName: name.current.value,
-            photoURL:
-              "https://avatars.githubusercontent.com/u/176993623?v=4&size=64",
+            photoURL:USER_AVATAR
           })
             .then(() => {
               return reload(auth.currentUser);
