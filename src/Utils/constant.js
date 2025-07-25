@@ -13,4 +13,6 @@ export const API_OPTIONS = {
   },
 };
 
+export const bgUrl = "https://assets.nflxext.com/ffe/siteui/vlv3/a927b1ee-784d-494a-aa80-cf7a062d2523/web/ID-en-20250714-TRIFECTA-perspective_2721ca4b-f834-4da0-a81e-c5492057f60d_large.jpg"
+
 export const IMG_CDN_URL = "https://image.tmdb.org/t/p/w500/";
